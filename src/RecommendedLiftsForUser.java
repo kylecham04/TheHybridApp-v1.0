@@ -1,3 +1,12 @@
+/**
+ * Author - Kyle Chambers
+ * File name - RecommendLiftsForUser
+ * Date of last update - 7/12/2024
+ * AddMaxLifts file description - Creates the add max lifts landing page and takes the user inputted
+ * maxes and updates the table in the database with them, all maxes are set to 0 if not updated.
+ * Updates to come - I am going to make it cleaner and add/ remove fields
+ **/
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
