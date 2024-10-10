@@ -18,6 +18,12 @@ public class RecommendedLiftsForUser extends JDialog {
     private JPanel RecommendedLift;
     private JTable suggestedLifts;
 
+    /**
+     * Constructor
+     * @param parent - JFrame used to center the page
+     * @param user - User using the program
+     * @param lift - String representing the type of
+     */
     public RecommendedLiftsForUser(JFrame parent, User user, String lift) {
         super(parent);
         setTitle("Recommended Lifts");

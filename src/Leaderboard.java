@@ -12,10 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class Leaderboard extends JDialog {
     private JTextArea taLeaderboard;
@@ -70,16 +67,14 @@ public class Leaderboard extends JDialog {
      * data on the screen.
      */
     private void fetchAndDisplayLiftsData() {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
 
         String sql = "SELECT name, maxBench, maxSquat, maxDeadlift, maxPullups, " +
                 "maxBarbellRow, totalWeight FROM registerUsers ORDER BY totalWeight DESC";
 
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
+        try (Connection con = databaseConnector.getConnection();
              PreparedStatement pstm = con.prepareStatement(sql);
-             ResultSet rs = pstm.executeQuery()) {
+             ResultSet rs = pstm.executeQuery()){
 
             StringBuilder liftsData = new StringBuilder();
             while (rs.next()) {
@@ -93,7 +88,7 @@ public class Leaderboard extends JDialog {
         }
     }
 
-    /**
+        /**
      * formatLiftData
      * Description - Formats each line of the leader board
      *

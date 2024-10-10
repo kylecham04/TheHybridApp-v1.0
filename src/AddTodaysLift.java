@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class AddTodaysLift extends JDialog{
+public class AddTodaysLift extends JDialog {
     private JTextField tfExercise1;
     private JTextField tfExercise2;
     private JTextField tfExercise3;
@@ -34,10 +34,11 @@ public class AddTodaysLift extends JDialog{
      * AddTodaysLift main method
      * Description - Creates the page and takes a user inputted lift and adds it to a lift
      * table in the database
+     *
      * @param parent - JFrame used to center the page
-     * @param user - the user running the program
+     * @param user   - the user running the program
      */
-    public AddTodaysLift(JFrame parent, User user){
+    public AddTodaysLift(JFrame parent, User user) {
         super(parent);
         setTitle("AddTodaysLift");
         setContentPane(AddTodaysLift);
@@ -52,6 +53,7 @@ public class AddTodaysLift extends JDialog{
     /**
      * setAddTodaysLiftButtons
      * Description - Creates all the working buttons for the Today's Lift Page
+     *
      * @param user - the user running the program
      */
     private void setAddTodaysLiftButtons(User user) {
@@ -76,23 +78,24 @@ public class AddTodaysLift extends JDialog{
     /**
      * updateUser
      * Description - takes all the inpputed lifts and joins them together into one lift
+     *
      * @param user - the user running the program
      */
     private boolean updateUser(User user) {
         String date = tfDate.getText().trim();
         String[] exercises = {
                 "(" + tfExercise1.getText().trim() + ")",
-                "(" +tfExercise2.getText().trim() + ")",
-                "(" +tfExercise3.getText().trim() + ")",
-                "(" +tfExercise4.getText().trim() + ")",
-                "(" +tfExercise5.getText().trim() + ")",
-                "(" +tfExercise6.getText().trim() + ")",
-                "(" +tfExercise7.getText().trim() + ")",
-                "(" +tfExercise8.getText().trim() + ")",
-                "(" +tfExercise9.getText().trim() + ")",
-                "(" +tfExercise10.getText().trim() + ")",
-                "(" +tfExercise11.getText().trim() + ")",
-                "(" +tfExercise12.getText().trim() + ")"
+                "(" + tfExercise2.getText().trim() + ")",
+                "(" + tfExercise3.getText().trim() + ")",
+                "(" + tfExercise4.getText().trim() + ")",
+                "(" + tfExercise5.getText().trim() + ")",
+                "(" + tfExercise6.getText().trim() + ")",
+                "(" + tfExercise7.getText().trim() + ")",
+                "(" + tfExercise8.getText().trim() + ")",
+                "(" + tfExercise9.getText().trim() + ")",
+                "(" + tfExercise10.getText().trim() + ")",
+                "(" + tfExercise11.getText().trim() + ")",
+                "(" + tfExercise12.getText().trim() + ")"
         };
 
         StringBuilder todaysLift = new StringBuilder();
@@ -113,12 +116,11 @@ public class AddTodaysLift extends JDialog{
      * updateOrAddLiftToDatabase
      * Description - Adds today's lift to the database or updates a corresponding one if duplicate
      * date is added
+     *
      * @param user - the user running the program
      */
     private boolean updateOrAddLiftToDatabase(User user) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String dbUsername = "root";
-        final String dbPassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
 
         String sqlCheck = "SELECT * FROM userLifts WHERE date = ? AND userName = ?";
         String sqlUpdate = "UPDATE userLifts SET todaysLift = ?, name = ? WHERE date = ? " +
@@ -126,10 +128,10 @@ public class AddTodaysLift extends JDialog{
         String sqlAdd = "INSERT INTO userLifts (date, userName, name, todaysLift) VALUES " +
                 "(?, ?, ?, ?)";
 
-        try (Connection con = DriverManager.getConnection(url, dbUsername, dbPassword);
-             PreparedStatement pstmCheck = con.prepareStatement(sqlCheck);
-             PreparedStatement pstmUpdate = con.prepareStatement(sqlUpdate);
-             PreparedStatement pstmAdd = con.prepareStatement(sqlAdd)) {
+        try (Connection con = databaseConnector.getConnection();
+            PreparedStatement pstmCheck = con.prepareStatement(sqlCheck);
+            PreparedStatement pstmUpdate = con.prepareStatement(sqlUpdate);
+            PreparedStatement pstmAdd = con.prepareStatement(sqlAdd)){
 
             pstmCheck.setString(1, user.todaysDate);
             pstmCheck.setString(2, user.userName);

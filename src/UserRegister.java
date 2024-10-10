@@ -13,10 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.regex.Pattern;
 
 public class UserRegister extends JDialog {
@@ -59,7 +56,11 @@ public class UserRegister extends JDialog {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registerUser();
+                try {
+                    registerUser();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         cancelButton.addActionListener(new ActionListener() {
@@ -79,7 +80,7 @@ public class UserRegister extends JDialog {
      * It continues to re-prompt until all fields are filled out correctly, and calls the method
      * responsible for actually adding the data after wards.
      */
-    private void registerUser() {
+    private void registerUser() throws SQLException {
         String name = tfName.getText().trim();
         String email = tfEmail.getText().trim();
         String userName = tfUsername.getText().trim();
@@ -124,7 +125,7 @@ public class UserRegister extends JDialog {
      * @return whether the inputs are valid or not
      */
     private boolean validateInputs(String name, String email, String userName, String age,
-                                   String weight, String password, String confirmPassword) {
+                                   String weight, String password, String confirmPassword) throws SQLException {
         if (name.isEmpty() || userName.isEmpty() || email.isEmpty() || age.isEmpty() ||
                 weight.isEmpty() || password.isEmpty()) {
             showMessage("Please enter all fields", "Try again",
@@ -208,22 +209,18 @@ public class UserRegister extends JDialog {
      * @param value     the value of that corresponding field that needs to be checked
      * @return whether the username or email already exists in the database or not
      */
-    private boolean isFieldTaken(String fieldName, String value) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
+    private boolean isFieldTaken(String fieldName, String value) throws SQLException {
+        DatabaseConnector connector = new DatabaseConnector();
         boolean fieldTaken = false;
 
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
+        try (Connection con = connector.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement("SELECT COUNT(*) " +
-                     "FROM registerUsers WHERE " + fieldName + " = ?")) {
+                     "FROM registerUsers WHERE " + fieldName + " = ?")){
             preparedStatement.setString(1, value);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next() && resultSet.getInt(1) > 0) {
                 fieldTaken = true;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
         return fieldTaken;
     }
@@ -243,12 +240,10 @@ public class UserRegister extends JDialog {
      */
     private User addUserToDatabase(String name, String email, int age, int weight,
                                    String userName, String password) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
         User user = null;
 
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
+        try (Connection con = databaseConnector.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement("INSERT into " +
                      "registerUsers (userName, name, email, age, weight, password) " +
                      "VALUES (?, ?, ?, ?, ?, ?)")) {

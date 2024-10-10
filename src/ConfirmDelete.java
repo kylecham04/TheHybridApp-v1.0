@@ -101,12 +101,10 @@ public class ConfirmDelete extends JDialog {
      * @return the number of rows affected in the database table
      */
     private static int deleteAccount(String userName, String password) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String dbUsername = "root";
-        final String dbPassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
         int rows = 0;
         try {
-            Connection con = DriverManager.getConnection(url, dbUsername, dbPassword);
+            Connection con = databaseConnector.getConnection();
             String query = "DELETE FROM registerUsers WHERE userName=? AND password = ?";
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, userName);

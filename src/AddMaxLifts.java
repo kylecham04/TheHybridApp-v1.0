@@ -120,15 +120,13 @@ public class AddMaxLifts extends JDialog {
      * @param user The user currently running the program
      */
     private void addMaxLiftsToDB(User user) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
 
         String updateSql = "UPDATE registerUsers SET maxBench = ?, maxSquat = ?, " +
                 "maxDeadlift = ?, maxPullups = ?, maxBarbellRow = ?, totalWeight = ?, " +
                 "weight = ? WHERE userName = ?";
 
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
+        try (Connection con = databaseConnector.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(updateSql)) {
 
             preparedStatement.setInt(1, user.maxBench);

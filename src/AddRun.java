@@ -127,9 +127,7 @@ public class AddRun extends JDialog {
      * @param user The user running the program
      */
     private void addOrUpdateRunInDatabase(User user) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
+        DatabaseConnector databaseConnector = new DatabaseConnector();
 
         String checkSql = "SELECT * FROM userRuns WHERE userName = ? AND date = ?";
         String updateSql = "UPDATE userRuns SET name = ?, timeRan = ?, distance = ?, " +
@@ -137,7 +135,7 @@ public class AddRun extends JDialog {
         String insertSql = "INSERT INTO userRuns (userName, date, name, timeRan, " +
                 "distance, caloriesBurned, pace) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
+        try (Connection con = databaseConnector.getConnection();
              PreparedStatement checkPstm = con.prepareStatement(checkSql);
              PreparedStatement updatePstm = con.prepareStatement(updateSql);
              PreparedStatement insertPstm = con.prepareStatement(insertSql)) {

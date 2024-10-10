@@ -24,9 +24,6 @@ public class UserLogIn extends JDialog {
     public UserRegister userRegister;
     public User user;
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/myfitnesstracker";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "Thehybridapp12!";
 
     /**
      * UserLogIn main method
@@ -107,10 +104,11 @@ public class UserLogIn extends JDialog {
      */
     private User logIn(String userName, String password) {
         User user = null;
+        DatabaseConnector databaseConnector = new DatabaseConnector();
 
-        try (Connection con = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        try (Connection con = databaseConnector.getConnection();
              PreparedStatement preparedStatement = con.prepareStatement(
-                     "SELECT * FROM registerUsers WHERE userName = ? AND password = ?")) {
+                     "SELECT * FROM registerUsers WHERE userName = ? AND password = ?")){
             preparedStatement.setString(1, userName);
             preparedStatement.setString(2, password);
 

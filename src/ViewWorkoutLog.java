@@ -28,7 +28,7 @@ public class ViewWorkoutLog extends JDialog {
      * @param parent - the JFrame used to center the window
      * @param user - the user running the program
      */
-    public ViewWorkoutLog(JFrame parent, User user) {
+    public ViewWorkoutLog(JFrame parent, User user) throws SQLException {
         super(parent);
         setTitle("Settings");
         setMinimumSize(new Dimension(800, 474));
@@ -44,7 +44,7 @@ public class ViewWorkoutLog extends JDialog {
      * Description - Creates the button listener that takes the user back to the home page
      * @param user - the user running the program
      */
-    private void createViewWorkoutButton(User user) {
+    private void createViewWorkoutButton(User user) throws SQLException {
         setRunText(user);
         setLiftText(user);
         backButton.addActionListener(new ActionListener() {
@@ -62,7 +62,7 @@ public class ViewWorkoutLog extends JDialog {
      * Description - sends the sql command string to the set text fields method
      * @param user - the user running the program
      */
-    private void setLiftText(User user) {
+    private void setLiftText(User user) throws SQLException {
         String liftSql = "SELECT date, todaysLift FROM userLifts WHERE userName = ?";
         setTextFields(liftSql, "lift", user);
     }
@@ -72,7 +72,7 @@ public class ViewWorkoutLog extends JDialog {
      * Description - sends the sql command string to the set text fields method
      * @param user - the user running the program
      */
-    private void setRunText(User user) {
+    private void setRunText(User user) throws SQLException {
         String runSql = "SELECT date, timeRan, distance, caloriesBurned, pace FROM userRuns " +
                 "WHERE userName = ?";
         setTextFields(runSql, "run", user);
@@ -86,13 +86,10 @@ public class ViewWorkoutLog extends JDialog {
      *                     out
      * @param user - the user running the program
      */
-    private void setTextFields(String sql, String whichWorkout, User user) {
-        final String url = "jdbc:mysql://localhost:3306/myfitnesstracker";
-        final String username = "root";
-        final String dataBasePassword = "Thehybridapp12!";
-
-        try (Connection con = DriverManager.getConnection(url, username, dataBasePassword);
-             PreparedStatement pstm = con.prepareStatement(sql)) {
+    private void setTextFields(String sql, String whichWorkout, User user) throws SQLException {
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        try (Connection con = databaseConnector.getConnection();
+             PreparedStatement pstm = con.prepareStatement(sql)){
 
             pstm.setString(1, user.userName);
             try (ResultSet rs = pstm.executeQuery()) {

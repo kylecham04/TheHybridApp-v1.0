@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class HomePage extends JDialog {
     private JButton addNewWorkoutButton;
@@ -94,7 +95,11 @@ public class HomePage extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                ViewWorkoutLog viewWorkoutLog = new ViewWorkoutLog(null, user);
+                try {
+                    ViewWorkoutLog viewWorkoutLog = new ViewWorkoutLog(null, user);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         setVisible(true);
